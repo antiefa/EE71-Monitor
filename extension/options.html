@@ -1,0 +1,234 @@
+<!--
+  EE71 Monitor
+  Copyright (c) 2026 antiefa
+  SPDX-License-Identifier: MIT
+  Source: https://github.com/antiefa/EE71-Monitor
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EE71 Monitor — Settings</title>
+    <link rel="stylesheet" href="options.css">
+    <script src="common.js" defer></script>
+    <script src="i18n.js" defer></script>
+    <script src="options.js" defer></script>
+  </head>
+  <body>
+    <div class="page">
+      <header class="appbar">
+        <img class="appbar__icon" src="icons/icon-48.png" alt="">
+        <div class="appbar__brand">
+          <strong data-i18n="appName">EE71 Monitor</strong>
+          <span class="appbar__meta"><span data-i18n="settingsPageSubtitle">Extension settings</span><span aria-hidden="true"> · </span><span id="appVersion">v—</span></span>
+        </div>
+        <div id="headerRouterStatus" class="router-status router-status--offline" role="status">
+          <span class="router-status__dot" aria-hidden="true"></span>
+          <span id="headerRouterStatusText" data-i18n="routerOffline">Router offline</span>
+        </div>
+      </header>
+
+      <form id="settingsForm" class="settings-layout" novalidate>
+        <nav class="tabs" aria-label="Settings sections" data-i18n-aria-label="settingsNavLabel">
+          <span class="tabs__title" data-i18n="settings">Settings</span>
+          <button class="tab" type="button" role="tab" aria-selected="true" aria-controls="generalPanel" data-tab="general">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h3M11 12h9M4 18h8M16 18h4"></path><circle cx="16" cy="6" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="14" cy="18" r="2"></circle></svg>
+            <span data-i18n="generalTab">General</span>
+          </button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="notificationsPanel" data-tab="notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+            <span data-i18n="notificationsTab">Notifications</span>
+          </button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="interfacePanel" data-tab="interface">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"></rect><path d="M8 22h8M12 18v4"></path></svg>
+            <span data-i18n="interfaceTab">Interface</span>
+          </button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="aboutPanel" data-tab="about">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 10.7V17"></path><circle cx="12" cy="7.3" r=".8" fill="currentColor" stroke="none"></circle></svg>
+            <span data-i18n="aboutTab">About</span>
+          </button>
+        </nav>
+
+        <div class="settings-content">
+          <section id="generalPanel" class="panel is-active" role="tabpanel" data-panel="general">
+            <h1 data-i18n="generalTitle">General settings</h1>
+            <p class="panel__intro" data-i18n="generalIntro">Set the router address and refresh frequency.</p>
+
+            <section class="form-section" aria-labelledby="connectionHeading">
+              <h2 id="connectionHeading" data-i18n="connectionSection">Connection</h2>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="routerAddress" data-i18n="routerAddress">Router IP address</label>
+                  <input id="routerAddress" class="control" name="routerAddress" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="192.168.1.1" required>
+                  <small data-i18n="routerAddressHint">A port is allowed, for example 192.168.1.1:8080</small>
+                </div>
+                <div class="field">
+                  <label for="pollInterval" data-i18n="pollInterval">Polling interval</label>
+                  <div class="number-control">
+                    <input id="pollInterval" name="pollInterval" type="number" min="1" max="60" step="1" required>
+                    <span data-i18n="minutes">min</span>
+                  </div>
+                  <small data-i18n="pollIntervalHint">Allowed value: 1 to 60 minutes.</small>
+                </div>
+              </div>
+            </section>
+
+            <section class="form-section" aria-labelledby="connectionCheckHeading">
+              <h2 id="connectionCheckHeading" data-i18n="connectionCheckTitle">Connection check</h2>
+              <div id="connectionSummary" class="connection-summary connection-summary--offline">
+                <span class="connection-summary__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.3 2.3 4.8-5"></path></svg>
+                </span>
+                <div class="connection-summary__copy">
+                  <strong id="connectionSummaryTitle" data-i18n="routerNotResponding">Router is not responding yet</strong>
+                  <span id="connectionSummaryDetail">192.168.1.1</span>
+                </div>
+                <button id="testButton" class="secondary-button" type="submit" data-i18n="check">Check</button>
+              </div>
+            </section>
+          </section>
+
+          <section id="notificationsPanel" class="panel" role="tabpanel" data-panel="notifications" hidden>
+            <h1 data-i18n="notificationsTitle">Notifications</h1>
+            <p class="panel__intro" data-i18n="notificationsIntro">Each alert is shown once.</p>
+
+            <section class="form-section" aria-labelledby="lowBatteryHeading">
+              <h2 id="lowBatteryHeading" data-i18n="lowBatterySection">Low battery</h2>
+              <label class="switch-row" for="notificationsEnabled">
+                <span class="switch-row__copy"><strong data-i18n="notificationsEnabled">Warn when the battery is low</strong><small data-i18n="notificationsEnabledHint">A notification at the threshold.</small></span>
+                <span class="switch"><input id="notificationsEnabled" name="notificationsEnabled" type="checkbox"><span class="switch__track" aria-hidden="true"><span></span></span></span>
+              </label>
+
+              <div id="notificationFields" class="notification-fields">
+                <div class="threshold-row">
+                  <div><label for="batteryThreshold" data-i18n="batteryThreshold">Battery threshold</label><small data-i18n="batteryThresholdHint">Allowed value: 1 to 100%.</small></div>
+                  <div class="number-control number-control--short"><input id="batteryThreshold" name="batteryThreshold" type="number" min="1" max="100" step="1" required><span>%</span></div>
+                </div>
+                <h3 data-i18n="notificationText">Notification text</h3>
+                <div class="field" data-notification-locale="ru"><label class="visually-hidden" for="notificationTextRu" data-i18n="notificationText">Notification text</label><textarea id="notificationTextRu" class="control" name="notificationTextRu" rows="3" required></textarea></div>
+                <div class="field" data-notification-locale="en"><label class="visually-hidden" for="notificationTextEn" data-i18n="notificationText">Notification text</label><textarea id="notificationTextEn" class="control" name="notificationTextEn" rows="3" required></textarea></div>
+                <small data-i18n="placeholderHint">The {level} variable is replaced with the current percentage.</small>
+              </div>
+            </section>
+
+            <section class="form-section" aria-labelledby="fullChargeHeading">
+              <h2 id="fullChargeHeading" data-i18n="fullChargeSection">Full charge</h2>
+              <label class="switch-row" for="fullChargeNotificationsEnabled">
+                <span class="switch-row__copy"><strong data-i18n="fullChargeNotificationsEnabled">Notify when fully charged</strong><small data-i18n="fullChargeNotificationsHint">Once on the transition to 100%.</small></span>
+                <span class="switch"><input id="fullChargeNotificationsEnabled" name="fullChargeNotificationsEnabled" type="checkbox"><span class="switch__track" aria-hidden="true"><span></span></span></span>
+              </label>
+
+              <div id="fullChargeNotificationFields" class="notification-fields">
+                <h3 data-i18n="notificationText">Notification text</h3>
+                <div class="field" data-notification-locale="ru"><label class="visually-hidden" for="fullChargeNotificationTextRu" data-i18n="notificationText">Notification text</label><textarea id="fullChargeNotificationTextRu" class="control" name="fullChargeNotificationTextRu" rows="3" required></textarea></div>
+                <div class="field" data-notification-locale="en"><label class="visually-hidden" for="fullChargeNotificationTextEn" data-i18n="notificationText">Notification text</label><textarea id="fullChargeNotificationTextEn" class="control" name="fullChargeNotificationTextEn" rows="3" required></textarea></div>
+                <small data-i18n="fullChargePlaceholderHint">The notification is not repeated at 100%.</small>
+              </div>
+            </section>
+          </section>
+
+          <section id="interfacePanel" class="panel" role="tabpanel" data-panel="interface" hidden>
+            <h1 data-i18n="interfaceTitle">Interface</h1>
+            <p class="panel__intro" data-i18n="interfaceIntro">Choose the extension language.</p>
+            <section class="form-section" aria-labelledby="languageHeading">
+              <h2 id="languageHeading" data-i18n="language">Language</h2>
+              <div class="field field--language">
+                <label class="visually-hidden" for="language" data-i18n="language">Language</label>
+                <div class="select-control">
+                  <select id="language" name="language">
+                    <option value="auto" data-i18n="languageAuto">Automatic</option>
+                    <option value="ru" data-i18n="languageRussian">Русский</option>
+                    <option value="en" data-i18n="languageEnglish">English</option>
+                  </select>
+                </div>
+                <small id="languageHint" hidden></small>
+              </div>
+            </section>
+
+            <section class="form-section" aria-labelledby="popupStyleHeading">
+              <h2 id="popupStyleHeading" data-i18n="popupStyle">Popup appearance</h2>
+              <p class="section-hint" data-i18n="popupStyleHint">Every layout shows the same data.</p>
+              <div class="popup-style-picker">
+                <label class="popup-style-option">
+                  <input type="radio" name="popupStyle" value="grid">
+                  <span class="popup-style-option__body">
+                    <span class="popup-preview" aria-hidden="true"><svg viewBox="0 0 112 72"><rect class="preview-frame" x="1" y="1" width="110" height="70" rx="5"/><rect class="preview-ink" x="10" y="9" width="42" height="5" rx="2"/><rect class="preview-cell" x="10" y="21" width="43" height="18" rx="2"/><rect class="preview-cell" x="59" y="21" width="43" height="18" rx="2"/><rect class="preview-cell" x="10" y="45" width="43" height="18" rx="2"/><rect class="preview-cell" x="59" y="45" width="43" height="18" rx="2"/></svg></span>
+                    <span class="popup-style-option__copy"><strong data-i18n="popupStyleGrid">Grid</strong><small data-i18n="popupStyleGridHint">Compact cards for every metric.</small></span>
+                  </span>
+                </label>
+                <label class="popup-style-option">
+                  <input type="radio" name="popupStyle" value="network">
+                  <span class="popup-style-option__body">
+                    <span class="popup-preview" aria-hidden="true"><svg viewBox="0 0 112 72"><rect class="preview-frame" x="1" y="1" width="110" height="70" rx="5"/><rect class="preview-cell" x="10" y="10" width="92" height="27" rx="3"/><rect class="preview-ink" x="17" y="17" width="38" height="5" rx="2"/><rect class="preview-soft" x="17" y="27" width="72" height="5" rx="2"/><rect class="preview-cell" x="10" y="43" width="92" height="13" rx="2"/><rect class="preview-accent" x="10" y="62" width="75" height="5" rx="2"/></svg></span>
+                    <span class="popup-style-option__copy"><strong data-i18n="popupStyleNetwork">Network focus</strong><small data-i18n="popupStyleNetworkHint">The network takes priority.</small></span>
+                  </span>
+                </label>
+                <label class="popup-style-option">
+                  <input type="radio" name="popupStyle" value="signal">
+                  <span class="popup-style-option__body">
+                    <span class="popup-preview" aria-hidden="true"><svg viewBox="0 0 112 72"><rect class="preview-frame" x="1" y="1" width="110" height="70" rx="5"/><circle class="preview-ring preview-ring--green" cx="34" cy="31" r="17"/><circle class="preview-ring preview-ring--blue" cx="78" cy="31" r="17"/><rect class="preview-cell" x="10" y="56" width="92" height="8" rx="2"/></svg></span>
+                    <span class="popup-style-option__copy"><strong data-i18n="popupStyleSignal">Signal ring</strong><small data-i18n="popupStyleSignalHint">A prominent signal indicator.</small></span>
+                  </span>
+                </label>
+                <label class="popup-style-option">
+                  <input type="radio" name="popupStyle" value="dark">
+                  <span class="popup-style-option__body">
+                    <span class="popup-preview" aria-hidden="true"><svg viewBox="0 0 112 72"><rect class="preview-frame" x="1" y="1" width="110" height="70" rx="5"/><path class="preview-dark" d="M6 1h100a5 5 0 0 1 5 5v31H1V6a5 5 0 0 1 5-5Z"/><rect class="preview-light" x="10" y="10" width="42" height="5" rx="2"/><rect class="preview-accent" x="10" y="21" width="28" height="4" rx="2"/><rect class="preview-cell" x="10" y="44" width="92" height="18" rx="2"/></svg></span>
+                    <span class="popup-style-option__copy"><strong data-i18n="popupStyleDark">Dark header</strong><small data-i18n="popupStyleDarkHint">A high-contrast network panel.</small></span>
+                  </span>
+                </label>
+              </div>
+            </section>
+          </section>
+
+          <section id="aboutPanel" class="panel about-panel" role="tabpanel" data-panel="about" hidden>
+            <div class="about-hero">
+              <img class="about-hero__icon" src="icons/icon-48.png" alt="">
+              <div class="about-hero__copy">
+                <span class="about-hero__eyebrow" data-i18n="aboutEyebrow">Local router monitor</span>
+                <h1>EE71 Monitor</h1>
+                <p data-i18n="aboutIntro">An unofficial monitor for the Alcatel EE71 mobile router.</p>
+                <span class="version-chip"><span data-i18n="versionLabel">Version</span> <strong id="aboutVersion">—</strong></span>
+              </div>
+            </div>
+
+            <div class="about-feature-grid">
+              <article class="about-feature">
+                <span class="about-feature__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 17V9M9 17V6M14 17v-4M19 17V3"></path></svg></span>
+                <div><h2 data-i18n="aboutStatusTitle">Router status</h2><p data-i18n="aboutStatusText">Battery, mobile network, signal, connection and Wi-Fi clients.</p></div>
+              </article>
+              <article class="about-feature">
+                <span class="about-feature__icon about-feature__icon--blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg></span>
+                <div><h2 data-i18n="aboutAlertsTitle">Battery alerts</h2><p data-i18n="aboutAlertsText">Configurable low-battery and one-time full-charge notifications.</p></div>
+              </article>
+              <article class="about-feature">
+                <span class="about-feature__icon about-feature__icon--neutral" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 4.5 6v5.2c0 4.6 3.2 8.2 7.5 9.8 4.3-1.6 7.5-5.2 7.5-9.8V6L12 3Z"></path><path d="m8.7 12 2.1 2.1 4.6-4.7"></path></svg></span>
+                <div><h2 data-i18n="aboutPrivacyTitle">Local and private</h2><p data-i18n="aboutPrivacyText">No cloud, analytics, advertising or transmission to third parties.</p></div>
+              </article>
+            </div>
+
+            <section class="about-data-note" aria-labelledby="aboutDataTitle">
+              <span class="about-data-note__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 10.5a7 7 0 0 1 14 0V16a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-5.5Z"></path><path d="M9 10V8a3 3 0 0 1 6 0v2"></path></svg></span>
+              <div><h2 id="aboutDataTitle" data-i18n="aboutDataTitle">How data is accessed</h2><p data-i18n="aboutDataText">The extension reads system information exposed by the router home page without signing in to the administration panel. It does not change router settings.</p></div>
+            </section>
+
+            <nav class="about-links" aria-label="Project links" data-i18n-aria-label="aboutLinksLabel">
+              <a href="https://github.com/antiefa/EE71-Monitor" target="_blank" rel="noopener noreferrer"><span data-i18n="aboutGitHub">Source code on GitHub</span><span aria-hidden="true">↗</span></a>
+              <a href="https://github.com/antiefa/EE71-Monitor/blob/main/PRIVACY.md" target="_blank" rel="noopener noreferrer"><span data-i18n="aboutPrivacyLink">Privacy policy</span><span aria-hidden="true">↗</span></a>
+              <a href="https://github.com/antiefa/EE71-Monitor/issues" target="_blank" rel="noopener noreferrer"><span data-i18n="aboutIssues">Report an issue</span><span aria-hidden="true">↗</span></a>
+            </nav>
+
+            <p class="about-disclaimer" data-i18n="aboutDisclaimer">This community project is not affiliated with or endorsed by Alcatel, TCL or any mobile operator.</p>
+            <p class="about-copyright">© 2026 <a href="https://github.com/antiefa" target="_blank" rel="noopener noreferrer">antiefa</a><span aria-hidden="true"> · </span><a href="https://github.com/antiefa/EE71-Monitor/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a></p>
+          </section>
+
+          <footer id="formFooter" class="form-footer">
+            <div id="saveStatus" class="save-status" role="status" aria-live="polite"><span class="save-status__dot" aria-hidden="true"></span><span data-i18n="statusIdle">Changes have not been saved yet.</span></div>
+            <button id="saveButton" class="save-button" type="submit"><span id="saveButtonText" data-i18n="saveAndCheck">Save and test</span></button>
+          </footer>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

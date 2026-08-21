@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="EE71 Monitor">
+  <rect x="5" y="5" width="118" height="118" rx="20" fill="#171918"/>
+  <path d="M29 50c19-18 51-18 70 0M40 63c13-12 35-12 48 0M51 76c7-6 19-6 26 0" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="64" cy="91" r="7" fill="#fff"/>
+</svg>

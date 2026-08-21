@@ -1,0 +1,42 @@
+PROJECT_STATUS.md
+
+# Store submission kit (descriptions, review notes, screenshots and upload copies)
+store-submission/
+
+# Internal QA artifacts
+dogfood-output/
+
+# Keep only the current release archives in Git
+dist/*
+!dist/ee71-monitor-chrome-1.4.0.zip
+!dist/ee71-monitor-firefox-1.4.0.xpi
+!dist/ee71-monitor-yandex-1.4.0.zip
+
+# Dependencies, caches and coverage
+node_modules/
+.npm/
+.cache/
+coverage/
+.nyc_output/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Editors and IDEs
+.idea/
+.vscode/
+*.code-workspace
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Locally packed browser artifacts
+*.crx
+*.pem

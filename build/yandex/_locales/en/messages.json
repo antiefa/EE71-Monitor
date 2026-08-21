@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "EE71 Monitor"
+  },
+  "extensionDescription": {
+    "message": "Battery, mobile network, and connection status for an EE71 router."
+  }
+}
