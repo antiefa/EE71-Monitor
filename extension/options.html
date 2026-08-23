@@ -146,6 +146,36 @@
               </div>
             </section>
 
+            <section class="form-section" aria-labelledby="badgeHeading">
+              <h2 id="badgeHeading" data-i18n="badgeSection">Battery on the toolbar icon</h2>
+              <label class="switch-row" for="badgeEnabled">
+                <span class="switch-row__copy"><strong data-i18n="badgeEnabled">Show the battery level</strong><small data-i18n="badgeEnabledHint">Turn this off to hide the toolbar battery level.</small></span>
+                <span class="switch"><input id="badgeEnabled" name="badgeEnabled" type="checkbox"><span class="switch__track" aria-hidden="true"><span></span></span></span>
+              </label>
+              <div id="badgeFields" class="badge-fields form-grid">
+                <div class="field">
+                  <label for="badgeFormat" data-i18n="badgeFormat">Format</label>
+                  <div class="select-control">
+                    <select id="badgeFormat" name="badgeFormat">
+                      <option value="percent" data-i18n="badgeFormatPercent">51%</option>
+                      <option value="number" data-i18n="badgeFormatNumber">51</option>
+                    </select>
+                  </div>
+                  <small data-i18n="badgeFormatHint">The percent sign can be hidden.</small>
+                </div>
+                <div class="field">
+                  <label for="badgeChargingStyle" data-i18n="badgeChargingStyle">While charging</label>
+                  <div class="select-control">
+                    <select id="badgeChargingStyle" name="badgeChargingStyle">
+                      <option value="icon-and-color" data-i18n="badgeChargingIconAndColor">Lightning and color</option>
+                      <option value="color-only" data-i18n="badgeChargingColorOnly">Color only</option>
+                    </select>
+                  </div>
+                  <small data-i18n="badgeFontHint">The browser controls the badge font size.</small>
+                </div>
+              </div>
+            </section>
+
             <section class="form-section" aria-labelledby="popupStyleHeading">
               <h2 id="popupStyleHeading" data-i18n="popupStyle">Popup appearance</h2>
               <p class="section-hint" data-i18n="popupStyleHint">Every layout shows the same data.</p>

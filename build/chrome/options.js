@@ -37,6 +37,10 @@
       "pollInterval",
       "language",
       "languageHint",
+      "badgeEnabled",
+      "badgeFields",
+      "badgeFormat",
+      "badgeChargingStyle",
       "notificationsEnabled",
       "notificationFields",
       "batteryThreshold",
@@ -68,6 +72,9 @@
     elements.routerAddress.value = settings.routerAddress;
     elements.pollInterval.value = settings.pollInterval;
     elements.language.value = settings.language;
+    elements.badgeEnabled.checked = settings.badgeEnabled;
+    elements.badgeFormat.value = settings.badgeFormat;
+    elements.badgeChargingStyle.value = settings.badgeChargingStyle;
     elements.popupStyleInputs.forEach((input) => {
       input.checked = input.value === settings.popupStyle;
     });
@@ -79,6 +86,7 @@
     elements.fullChargeNotificationTextRu.value = settings.fullChargeNotificationTextRu;
     elements.fullChargeNotificationTextEn.value = settings.fullChargeNotificationTextEn;
     updateNotificationFields();
+    updateBadgeFields();
     updateLanguageHint();
   }
 
@@ -99,6 +107,9 @@
       pollInterval: elements.pollInterval.value,
       language: elements.language.value,
       popupStyle: elements.popupStyleInputs.find((input) => input.checked)?.value,
+      badgeEnabled: elements.badgeEnabled.checked,
+      badgeFormat: elements.badgeFormat.value,
+      badgeChargingStyle: elements.badgeChargingStyle.value,
       notificationsEnabled: elements.notificationsEnabled.checked,
       batteryThreshold: elements.batteryThreshold.value,
       notificationTextRu: elements.notificationTextRu.value,
@@ -111,9 +122,13 @@
 
   function setFieldGroupEnabled(container, enabled) {
     container.classList.toggle("is-disabled", !enabled);
-    container.querySelectorAll("input, textarea").forEach((control) => {
+    container.querySelectorAll("input, textarea, select").forEach((control) => {
       control.disabled = !enabled;
     });
+  }
+
+  function updateBadgeFields() {
+    setFieldGroupEnabled(elements.badgeFields, elements.badgeEnabled.checked);
   }
 
   function updateNotificationFields() {
@@ -319,6 +334,7 @@
       tab.addEventListener("keydown", handleTabKeydown);
     });
     elements.language.addEventListener("change", updateLanguagePreview);
+    elements.badgeEnabled.addEventListener("change", updateBadgeFields);
     elements.notificationsEnabled.addEventListener("change", updateNotificationFields);
     elements.fullChargeNotificationsEnabled.addEventListener("change", updateNotificationFields);
     elements.settingsForm.addEventListener("input", () => {

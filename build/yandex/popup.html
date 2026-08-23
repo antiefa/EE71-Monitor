@@ -19,10 +19,15 @@
     <main class="device-card">
       <header class="device-header">
         <img class="device-header__icon" src="icons/icon-48.png" alt="">
-        <div class="device-header__identity"><h1 data-i18n="appName">EE71 Monitor</h1><p id="routerAddressDisplay">192.168.1.1</p></div>
-        <button id="settingsButton" class="icon-button" type="button" data-i18n-title="settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.3 15.1a1.7 1.7 0 0 0 .3 1.8l.1.1-2.7 2.7-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.6v.1h-4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.8.3l-.1.1L4.3 17l.1-.1a1.7 1.7 0 0 0 .3-1.8A1.7 1.7 0 0 0 3.1 14H3v-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.8L4.3 7 7 4.3l.1.1a1.7 1.7 0 0 0 1.8.3A1.7 1.7 0 0 0 10 3.1V3h4v.1a1.7 1.7 0 0 0 1.1 1.6 1.7 1.7 0 0 0 1.8-.3l.1-.1L19.7 7l-.1.1a1.7 1.7 0 0 0-.3 1.8 1.7 1.7 0 0 0 1.6 1.1h.1v4h-.1a1.7 1.7 0 0 0-1.6 1.1Z"></path></svg>
-        </button>
+        <div class="device-header__identity"><h1 data-i18n="appName">EE71 Monitor</h1><a id="routerAddressLink" class="router-address-link" href="http://192.168.1.1/" target="_blank" rel="noopener noreferrer" data-i18n-title="openRouterHome"><span id="routerAddressDisplay">192.168.1.1</span><span class="router-address-link__arrow" aria-hidden="true">↗</span></a></div>
+        <div class="device-header__actions">
+          <a id="routerHomeButton" class="icon-button" href="http://192.168.1.1/" target="_blank" rel="noopener noreferrer" data-i18n-title="openRouterHome">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m4 11 8-7 8 7"></path><path d="M6.5 9.5V20h11V9.5M10 20v-6h4v6"></path></svg>
+          </a>
+          <button id="settingsButton" class="icon-button" type="button" data-i18n-title="settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.3 15.1a1.7 1.7 0 0 0 .3 1.8l.1.1-2.7 2.7-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.6v.1h-4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.8.3l-.1.1L4.3 17l.1-.1a1.7 1.7 0 0 0 .3-1.8A1.7 1.7 0 0 0 3.1 14H3v-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.8L4.3 7 7 4.3l.1.1a1.7 1.7 0 0 0 1.8.3A1.7 1.7 0 0 0 10 3.1V3h4v.1a1.7 1.7 0 0 0 1.1 1.6 1.7 1.7 0 0 0 1.8-.3l.1-.1L19.7 7l-.1.1a1.7 1.7 0 0 0-.3 1.8 1.7 1.7 0 0 0 1.6 1.1h.1v4h-.1a1.7 1.7 0 0 0-1.6 1.1Z"></path></svg>
+          </button>
+        </div>
       </header>
 
       <section id="availability" class="availability availability--offline" role="status" aria-live="polite">
@@ -39,7 +44,7 @@
       <div class="layout-host" aria-label="Router details" data-i18n-aria-label="routerDetails">
         <section class="layout-view layout-grid" data-layout="grid">
           <div class="tiles">
-            <article class="tile"><span class="tile__label" data-i18n="battery">Battery</span><strong class="tile__value"><span data-value="battery">--</span><small data-battery-unit>%</small></strong><span class="battery-icon" data-battery-visual aria-hidden="true"><span></span></span></article>
+            <article class="tile"><span class="tile__label" data-i18n="battery">Battery</span><strong class="tile__value"><span data-value="battery">--</span><small data-battery-unit>%</small><span class="charging-mark" data-charging-indicator hidden aria-hidden="true">↯</span></strong><span class="battery-icon" data-battery-visual aria-hidden="true"><span></span></span></article>
             <article class="tile"><span class="tile__label" data-i18n="network">Network</span><strong class="tile__value tile__value--network value-with-type"><span data-value="network">—</span><small class="network-type" data-value="networkType">—</small></strong><svg class="tile__icon" aria-hidden="true"><use href="#icon-mobile"></use></svg></article>
             <article class="tile"><span class="tile__label" data-i18n="signal">Signal</span><strong class="tile__value" data-value="signal">—</strong><div class="signal-bars" data-signal-bars aria-label="Signal"><span></span><span></span><span></span><span></span><span></span></div></article>
             <article class="tile"><span class="tile__label" data-i18n="devices">Devices</span><strong class="tile__value"><span data-value="devices">—</span><small data-devices-suffix data-i18n="devicesTotal">total</small></strong><svg class="tile__icon wifi-status-icon" aria-hidden="true"><use href="#icon-wifi"></use></svg></article>
@@ -56,7 +61,7 @@
             <div class="network-hero__signal"><div class="signal-bars signal-bars--inline" data-signal-bars aria-label="Signal"><span></span><span></span><span></span><span></span><span></span></div><strong data-value="signal">—</strong></div>
           </article>
           <article class="wide-metric">
-            <div class="wide-metric__head"><span><svg aria-hidden="true"><use href="#icon-battery"></use></svg><span data-i18n="battery">Battery</span></span><strong><span data-value="battery">--</span><small data-battery-unit>%</small></strong></div>
+            <div class="wide-metric__head"><span><svg aria-hidden="true"><use href="#icon-battery"></use></svg><span data-i18n="battery">Battery</span></span><strong><span data-value="battery">--</span><small data-battery-unit>%</small><span class="charging-mark" data-charging-indicator hidden aria-hidden="true">↯</span></strong></div>
             <div class="battery-progress battery-progress--wide" data-battery-progress role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
           </article>
           <div class="wifi-networks" data-wifi-networks></div>
@@ -72,7 +77,7 @@
             <strong class="ring-focus__network"><span data-value="network">—</span><small class="network-type" data-value="networkType">—</small></strong>
             <div class="ring-pair">
               <div class="ring-metric"><span class="metric-label" data-i18n="signal">Signal</span><div class="signal-ring" data-signal-ring role="img"><div><strong data-value="signal">—</strong><small data-value="networkType">—</small></div></div></div>
-              <div class="ring-metric"><span class="metric-label" data-i18n="battery">Battery</span><div class="battery-ring" data-battery-ring role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div><strong><span data-value="battery">--</span><small data-battery-unit>%</small></strong><small data-i18n="battery">Battery</small></div></div></div>
+              <div class="ring-metric"><span class="metric-label" data-i18n="battery">Battery</span><div class="battery-ring" data-battery-ring role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div><strong><span data-value="battery">--</span><small data-battery-unit>%</small><span class="charging-mark" data-charging-indicator hidden aria-hidden="true">↯</span></strong><small data-i18n="battery">Battery</small></div></div></div>
             </div>
           </div>
           <div class="wifi-networks" data-wifi-networks></div>
@@ -89,7 +94,7 @@
             <div class="dark-hero__signal"><div class="signal-bars signal-bars--dark" data-signal-bars aria-label="Signal"><span></span><span></span><span></span><span></span><span></span></div><strong data-value="signal">—</strong></div>
           </article>
           <div class="dark-grid">
-            <article class="dark-metric"><span><svg aria-hidden="true"><use href="#icon-battery"></use></svg><span data-i18n="battery">Battery</span></span><strong><span data-value="battery">--</span><small data-battery-unit>%</small></strong></article>
+            <article class="dark-metric"><span><svg aria-hidden="true"><use href="#icon-battery"></use></svg><span data-i18n="battery">Battery</span></span><strong><span data-value="battery">--</span><small data-battery-unit>%</small><span class="charging-mark" data-charging-indicator hidden aria-hidden="true">↯</span></strong></article>
             <article class="dark-metric"><span><svg aria-hidden="true"><use href="#icon-signal"></use></svg><span data-i18n="signal">Signal</span></span><strong data-value="signal">—</strong></article>
             <article class="dark-metric"><span><svg class="wifi-status-icon" aria-hidden="true"><use href="#icon-wifi"></use></svg><span data-i18n="devices">Devices</span></span><strong data-value="devices">—</strong></article>
             <article class="dark-metric"><span><svg class="state-icon" data-connection-icon aria-hidden="true"><use href="#icon-alert"></use></svg><span data-i18n="connection">Connection</span></span><strong data-value="connection">—</strong></article>

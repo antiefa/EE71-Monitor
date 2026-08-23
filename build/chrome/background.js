@@ -19,6 +19,7 @@ if (typeof importScripts === "function") {
     api,
     batteryLevel,
     extractVerificationValues,
+    isBatteryCharging,
     normalizeRouterAddress,
     sanitizeSettings,
     shouldNotifyFullCharge
@@ -57,35 +58,80 @@ if (typeof importScripts === "function") {
     return nextState;
   }
 
-  function setBadgeAppearance(text, backgroundColor) {
+  function callAction(method, details) {
     try {
-      ext.action.setBadgeText({ text });
-      ext.action.setBadgeBackgroundColor({ color: backgroundColor });
-      if (typeof ext.action.setBadgeTextColor === "function") {
-        ext.action.setBadgeTextColor({ color: "#FFFFFF" });
+      if (typeof ext.action[method] !== "function") {
+        return;
+      }
+      const result = ext.action[method](details);
+      if (result && typeof result.catch === "function") {
+        result.catch(() => undefined);
       }
     } catch (_error) {
-      // A badge is supplementary; status remains available in the popup.
+      // Action decoration is supplementary; status remains available in the popup.
     }
+  }
+
+  function setActionAppearance({ text, backgroundColor, charging, settings, title }) {
+    callAction("setBadgeText", { text });
+    callAction("setBadgeBackgroundColor", { color: backgroundColor });
+    callAction("setBadgeTextColor", { color: "#FFFFFF" });
+    callAction("setTitle", { title });
+
+    const iconPrefix = charging && settings.badgeChargingStyle === "icon-and-color"
+      ? "icons/icon-charging"
+      : "icons/icon";
+    callAction("setIcon", {
+      path: {
+        16: `${iconPrefix}-16.png`,
+        32: `${iconPrefix}-32.png`,
+        48: `${iconPrefix}-48.png`
+      }
+    });
   }
 
   async function updateBadge(state) {
     try {
+      const settings = await getSettings();
+      const locale = resolveLocale(settings.language);
+      const visibleText = (text) => settings.badgeEnabled ? text : "";
+
       if (state.loading && !state.data) {
-        setBadgeAppearance("…", "#526168");
+        setActionAppearance({
+          text: visibleText("…"),
+          backgroundColor: "#526168",
+          charging: false,
+          settings,
+          title: translate(locale, "badgeTitleLoading")
+        });
         return;
       }
       if (!state.reachable) {
-        setBadgeAppearance("×", "#B23A32");
+        setActionAppearance({
+          text: visibleText("×"),
+          backgroundColor: "#B23A32",
+          charging: false,
+          settings,
+          title: translate(locale, "badgeTitleUnavailable")
+        });
         return;
       }
 
       const level = batteryLevel(state.data);
-      const settings = await getSettings();
-      setBadgeAppearance(
-        level === null ? "•" : `${level}%`,
-        level !== null && level <= settings.batteryThreshold ? "#9A5500" : "#26734D"
-      );
+      const charging = Boolean(state.charging && level !== null);
+      const suffix = settings.badgeFormat === "percent" ? "%" : "";
+      const title = level === null
+        ? translate(locale, "badgeTitleNoBattery")
+        : translate(locale, charging ? "badgeTitleCharging" : "badgeTitleBattery", { level });
+      setActionAppearance({
+        text: visibleText(level === null ? "•" : `${level}${suffix}`),
+        backgroundColor: charging
+          ? "#318BBB"
+          : (level !== null && level <= settings.batteryThreshold ? "#9A5500" : "#26734D"),
+        charging,
+        settings,
+        title
+      });
     } catch (_error) {
       // Ignore badge API failures on browsers that handle SVG/action badges differently.
     }
@@ -337,6 +383,7 @@ if (typeof importScripts === "function") {
         reachable: false,
         loading: false,
         configured: false,
+        charging: false,
         error: normalized.code,
         errorDetail: normalized.detail,
         lastAttemptAt
@@ -351,6 +398,7 @@ if (typeof importScripts === "function") {
         reachable: false,
         loading: false,
         configured: false,
+        charging: false,
         error: "permission_missing",
         errorDetail: connection.permissionPattern,
         lastAttemptAt
@@ -366,6 +414,7 @@ if (typeof importScripts === "function") {
         reachable: normalized.reachable,
         loading: false,
         configured: true,
+        charging: false,
         error: normalized.code,
         errorDetail: normalized.detail,
         lastAttemptAt
@@ -399,6 +448,7 @@ if (typeof importScripts === "function") {
         reachable: true,
         loading: false,
         configured: true,
+        charging: isBatteryCharging(previous.data, data),
         data,
         error: null,
         errorDetail: "",
@@ -415,6 +465,7 @@ if (typeof importScripts === "function") {
         reachable: normalized.reachable,
         loading: false,
         configured: true,
+        charging: false,
         error: normalized.code,
         errorDetail: normalized.detail,
         lastAttemptAt

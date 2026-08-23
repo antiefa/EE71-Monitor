@@ -25,6 +25,9 @@
     notificationsEnabled: true,
     language: "auto",
     popupStyle: "grid",
+    badgeEnabled: true,
+    badgeFormat: "percent",
+    badgeChargingStyle: "icon-and-color",
     notificationTextRu: DEFAULT_NOTIFICATION_TEXT.ru,
     notificationTextEn: DEFAULT_NOTIFICATION_TEXT.en,
     fullChargeNotificationsEnabled: true,
@@ -36,6 +39,7 @@
     reachable: false,
     loading: false,
     configured: false,
+    charging: false,
     data: null,
     error: "permission_missing",
     errorDetail: "",
@@ -170,6 +174,12 @@
     const popupStyle = ["grid", "network", "signal", "dark"].includes(source.popupStyle)
       ? source.popupStyle
       : DEFAULT_SETTINGS.popupStyle;
+    const badgeFormat = ["percent", "number"].includes(source.badgeFormat)
+      ? source.badgeFormat
+      : DEFAULT_SETTINGS.badgeFormat;
+    const badgeChargingStyle = ["icon-and-color", "color-only"].includes(source.badgeChargingStyle)
+      ? source.badgeChargingStyle
+      : DEFAULT_SETTINGS.badgeChargingStyle;
 
     return {
       routerAddress: String(source.routerAddress || DEFAULT_SETTINGS.routerAddress).trim(),
@@ -178,6 +188,9 @@
       notificationsEnabled: source.notificationsEnabled !== false,
       language,
       popupStyle,
+      badgeEnabled: source.badgeEnabled !== false,
+      badgeFormat,
+      badgeChargingStyle,
       notificationTextRu: String(source.notificationTextRu || DEFAULT_NOTIFICATION_TEXT.ru).trim(),
       notificationTextEn: String(source.notificationTextEn || DEFAULT_NOTIFICATION_TEXT.en).trim(),
       fullChargeNotificationsEnabled: source.fullChargeNotificationsEnabled !== false,
@@ -237,6 +250,12 @@
     return Number.isFinite(previous) && Number.isFinite(current) && previous < 100 && current === 100;
   }
 
+  function isBatteryCharging(previousData, currentData) {
+    const previous = batteryLevel(previousData);
+    const current = batteryLevel(currentData);
+    return previous !== null && current !== null && current > previous;
+  }
+
   global.EE71 = Object.freeze({
     DEFAULT_FULL_NOTIFICATION_TEXT,
     DEFAULT_NOTIFICATION_TEXT,
@@ -245,6 +264,7 @@
     api,
     batteryLevel,
     extractVerificationValues,
+    isBatteryCharging,
     networkType,
     normalizeRouterAddress,
     sanitizeSettings,

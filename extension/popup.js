@@ -15,6 +15,7 @@
     api,
     batteryLevel,
     networkType,
+    normalizeRouterAddress,
     sanitizeSettings
   } = global.EE71;
   const { localizeDocument, resolveLocale, translate } = global.EE71_I18N;
@@ -48,7 +49,9 @@
       "availability",
       "availabilityText",
       "availabilityTime",
+      "routerAddressLink",
       "routerAddressDisplay",
+      "routerHomeButton",
       "updatedAt",
       "errorPanel",
       "errorText",
@@ -67,6 +70,7 @@
     elements.batteryVisuals = all("[data-battery-visual]");
     elements.batteryProgresses = all("[data-battery-progress]");
     elements.batteryRings = all("[data-battery-ring]");
+    elements.chargingIndicators = all("[data-charging-indicator]");
     elements.signalBars = all("[data-signal-bars]");
     elements.signalRings = all("[data-signal-ring]");
     elements.connectionIcons = all("[data-connection-icon]");
@@ -188,6 +192,8 @@
 
   function renderBattery(level) {
     const numericLevel = level === null ? 0 : level;
+    const charging = Boolean(state.charging && level !== null);
+    document.body.classList.toggle("is-charging", charging);
     setValue("battery", level === null ? "--" : String(level));
     elements.batteryUnits.forEach((unit) => {
       unit.hidden = level === null;
@@ -195,17 +201,45 @@
     [...elements.batteryVisuals, ...elements.batteryProgresses].forEach((visual) => {
       visual.style.setProperty("--battery-level", numericLevel);
       visual.classList.toggle("battery--low", level !== null && level <= settings.batteryThreshold);
+      visual.classList.toggle("battery--charging", charging);
     });
     elements.batteryProgresses.forEach((progress) => {
       progress.setAttribute("aria-valuenow", String(numericLevel));
-      progress.setAttribute("aria-label", `${translate(locale, "battery")}: ${level === null ? "—" : `${level}%`}`);
+      progress.setAttribute(
+        "aria-label",
+        `${translate(locale, "battery")}: ${level === null ? "—" : `${level}%`}${charging ? `, ${translate(locale, "charging")}` : ""}`
+      );
     });
     elements.batteryRings.forEach((ring) => {
       ring.style.setProperty("--battery-progress", `${numericLevel}%`);
       ring.classList.toggle("battery--low", level !== null && level <= settings.batteryThreshold);
+      ring.classList.toggle("battery--charging", charging);
       ring.setAttribute("aria-valuenow", String(numericLevel));
-      ring.setAttribute("aria-label", `${translate(locale, "battery")}: ${level === null ? "—" : `${level}%`}`);
+      ring.setAttribute(
+        "aria-label",
+        `${translate(locale, "battery")}: ${level === null ? "—" : `${level}%`}${charging ? `, ${translate(locale, "charging")}` : ""}`
+      );
     });
+    elements.chargingIndicators.forEach((indicator) => {
+      indicator.hidden = !charging;
+      indicator.title = translate(locale, "charging");
+    });
+  }
+
+  function renderRouterHomeLinks() {
+    const links = [elements.routerAddressLink, elements.routerHomeButton];
+    try {
+      const connection = normalizeRouterAddress(settings.routerAddress);
+      links.forEach((link) => {
+        link.href = `${connection.baseUrl}/`;
+        link.removeAttribute("aria-disabled");
+      });
+    } catch (_error) {
+      links.forEach((link) => {
+        link.removeAttribute("href");
+        link.setAttribute("aria-disabled", "true");
+      });
+    }
   }
 
   function renderConnection(value, hasData) {
@@ -271,6 +305,7 @@
     const level = batteryLevel(data);
     const hasDevices = Boolean(data && Number.isFinite(Number(data.curr_num)));
     elements.routerAddressDisplay.textContent = settings.routerAddress;
+    renderRouterHomeLinks();
     renderBattery(level);
     setValue("network", data && data.NetworkName ? String(data.NetworkName) : translate(locale, "noNetwork"));
     setValue("networkType", data ? networkTypeLabel(data.NetworkType) : "—");

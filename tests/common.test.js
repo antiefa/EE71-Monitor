@@ -16,6 +16,7 @@ const {
   DEFAULT_SETTINGS,
   batteryLevel,
   extractVerificationValues,
+  isBatteryCharging,
   networkType,
   normalizeRouterAddress,
   sanitizeSettings,
@@ -61,6 +62,13 @@ assert.equal(batteryLevel({ BatteryLevel: 62, bat_cap: 30 }), 62);
 assert.equal(batteryLevel({ bat_cap: 101 }), 100);
 assert.equal(batteryLevel(null), null);
 
+assert.equal(isBatteryCharging(null, { BatteryLevel: 50 }), false);
+assert.equal(isBatteryCharging({ BatteryLevel: 50 }, null), false);
+assert.equal(isBatteryCharging({ BatteryLevel: 50 }, { BatteryLevel: 51 }), true);
+assert.equal(isBatteryCharging({ BatteryLevel: 51 }, { BatteryLevel: 51 }), false);
+assert.equal(isBatteryCharging({ BatteryLevel: 51 }, { BatteryLevel: 50 }), false);
+assert.equal(isBatteryCharging({ BatteryLevel: 99 }, { BatteryLevel: 100 }), true);
+
 assert.deepEqual(networkType(0), { code: 0, known: true, label: "NA" });
 assert.deepEqual(networkType(1), { code: 1, known: true, label: "2G" });
 assert.deepEqual(networkType(2), { code: 2, known: true, label: "2G" });
@@ -90,6 +98,17 @@ assert.deepEqual(
 );
 assert.equal(sanitizeSettings({ popupStyle: "dark" }).popupStyle, "dark");
 assert.equal(sanitizeSettings({ popupStyle: "unsupported" }).popupStyle, "grid");
+assert.equal(sanitizeSettings({ badgeEnabled: false }).badgeEnabled, false);
+assert.equal(sanitizeSettings({ badgeFormat: "number" }).badgeFormat, "number");
+assert.equal(sanitizeSettings({ badgeFormat: "unsupported" }).badgeFormat, "percent");
+assert.equal(
+  sanitizeSettings({ badgeChargingStyle: "color-only" }).badgeChargingStyle,
+  "color-only"
+);
+assert.equal(
+  sanitizeSettings({ badgeChargingStyle: "unsupported" }).badgeChargingStyle,
+  "icon-and-color"
+);
 
 assert.equal(resolveLocale("ru"), "ru");
 assert.equal(resolveLocale("en"), "en");

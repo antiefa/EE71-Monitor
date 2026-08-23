@@ -8,9 +8,9 @@ dogfood-output/
 
 # Keep only the current release archives in Git
 dist/*
-!dist/ee71-monitor-chrome-1.4.0.zip
-!dist/ee71-monitor-firefox-1.4.0.xpi
-!dist/ee71-monitor-yandex-1.4.0.zip
+!dist/ee71-monitor-chrome-1.5.0.zip
+!dist/ee71-monitor-firefox-1.5.0.xpi
+!dist/ee71-monitor-yandex-1.5.0.zip
 
 # Dependencies, caches and coverage
 node_modules/

@@ -1,33 +1,40 @@
 # Source build instructions
 
-EE71 Monitor 1.4.0 contains readable JavaScript, HTML, and CSS. It does not use minification, obfuscation, bundling, transpilation, generated JavaScript, or third-party runtime libraries.
+EE71 Monitor 1.5.0 contains readable JavaScript, HTML, and CSS. It does not use minification, obfuscation, bundling, transpilation, generated JavaScript, or third-party runtime libraries.
 
 ## Requirements
 
-- Node.js 18 or later.
-- No package installation or network access is required for the build.
+- Linux, macOS, or Windows;
+- Node.js 18 or later;
+- no npm packages or network access are required for the build.
 
-## Reproduce all browser builds
+The reference package was prepared on Linux x86_64 with Node.js 24.19.0.
 
-Run from the source archive root:
+## Reproduce the submitted files
 
-```bash
-node scripts/build.mjs
-```
+1. Extract the source archive into an empty directory.
+2. Open a terminal in its root.
+3. Run:
 
-The script copies the shared files from `extension/` and selects the appropriate manifest:
+   ```bash
+   node scripts/build.mjs
+   ```
 
-- `extension/manifest.json` → `build/chrome/manifest.json`;
-- `extension/manifest.firefox.json` → `build/firefox/manifest.json`;
-- `extension/manifest.yandex.json` → `build/yandex/manifest.json`.
+The script copies the readable source files without transforming them and creates:
 
-No source file contents are transformed.
+- `build/chrome` from `extension/manifest.json`;
+- `build/firefox` from `extension/manifest.firefox.json` for desktop and Android Firefox;
+- `build/yandex` from `extension/manifest.yandex.json`.
 
-## Tests
+The contents of `build/firefox` correspond to the root of the submitted universal Firefox XPI.
+
+## Optional verification
 
 ```bash
 node tests/common.test.js
 npx --yes web-ext@latest lint --source-dir build/firefox --output text --no-input
 ```
 
-The optional lint command downloads Mozilla's `web-ext` tool if it is not already installed. It is not part of the build.
+The test and lint commands are optional and are not part of the reproducible build. `web-ext` may be downloaded by `npx`; the build itself requires no downloads.
+
+All maintained JavaScript, HTML, CSS, localization, manifest, build-script, and test files are the original human-readable sources.

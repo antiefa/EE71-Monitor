@@ -88,8 +88,8 @@ button { font: inherit; }
 }
 
 .device-header__icon { width: 32px; height: 32px; border-radius: 6px; }
-.device-header__identity { min-width: 0; margin-left: 9px; }
-.device-header__identity h1, .device-header__identity p, .notice p { margin: 0; }
+.device-header__identity { min-width: 0; margin-left: 9px; flex: 1 1 auto; }
+.device-header__identity h1, .notice p { margin: 0; }
 
 .device-header__identity h1 {
   overflow: hidden;
@@ -100,21 +100,37 @@ button { font: inherit; }
   white-space: nowrap;
 }
 
-.device-header__identity p {
+.router-address-link {
   margin-top: 2px;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   overflow: hidden;
   color: var(--muted);
   font-size: 11px;
   line-height: 1.2;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--muted) 42%, transparent);
+  text-underline-offset: 2px;
+}
+
+.router-address-link > span:first-child {
+  min-width: 0;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.router-address-link__arrow { flex: 0 0 auto; color: var(--accent); font-size: 9px; font-weight: 700; text-decoration: none; }
+.router-address-link:hover { color: var(--text); text-decoration-color: var(--accent); }
+.device-header__actions { flex: 0 0 64px; margin-left: 4px; display: flex; align-items: center; justify-content: flex-end; }
+.device-header__actions .icon-button { flex: 0 0 32px; margin-left: 0; text-decoration: none; }
 
 .icon-button {
   display: grid;
   width: 32px;
   height: 32px;
-  margin-left: auto;
   padding: 0;
   place-items: center;
   border: 0;
@@ -179,6 +195,8 @@ button { font: inherit; }
 .battery-icon::after { position: absolute; top: 2px; right: -4px; width: 2px; height: 5px; border-radius: 0 2px 2px 0; content: ""; background: var(--muted); }
 .battery-icon span { display: block; width: calc(var(--battery-level, 0) * 1%); height: 100%; border-radius: 1px; background: var(--accent); transition: width 220ms ease; }
 .battery-icon.battery--low span { background: var(--danger); }
+.battery-icon.battery--charging { border-color: var(--info); }
+.battery-icon.battery--charging::after { background: var(--info); }
 
 .signal-bars { position: absolute; top: 11px; right: 10px; display: flex; align-items: flex-end; gap: 2px; width: 18px; height: 17px; }
 .signal-bars span { width: 2px; height: calc(4px + var(--signal-index) * 3px); border-radius: 2px 2px 0 0; background: var(--line); }
@@ -193,6 +211,14 @@ button { font: inherit; }
 .battery-progress::before { position: absolute; right: 0; left: 0; height: 5px; border-radius: 2px; content: ""; background: var(--line-soft); }
 .battery-progress span { position: relative; z-index: 1; display: block; width: calc(var(--battery-level, 0) * 1%); height: 5px; border-radius: 2px; background: var(--accent); transition: width 220ms ease; }
 .battery-progress.battery--low span { background: var(--danger); }
+.battery-icon.battery--charging > span,
+.battery-progress.battery--charging > span {
+  background: repeating-linear-gradient(120deg, #318bbb 0 6px, var(--info) 6px 10px) !important;
+  background-size: 20px 20px !important;
+  animation: charge-flow 900ms linear infinite;
+}
+
+.charging-mark { margin-left: 5px; color: #318bbb; font-size: 11px; font-weight: 700; vertical-align: 1px; }
 
 .metric-label { display: block; color: var(--muted); font-size: 10px; line-height: 1.2; }
 .network-hero { min-height: 68px; margin: 0 12px 8px; padding: 11px 12px; display: flex; align-items: center; border-radius: 7px; background: var(--surface-muted); }
@@ -239,7 +265,7 @@ button { font: inherit; }
 .dark-metric strong small { margin-left: 2px; color: var(--muted); font-size: 9px; }
 
 body[data-popup-style="dark"] .device-header, body[data-popup-style="dark"] .availability { color: #fff; background: #171918; border-color: #2c302e; }
-body[data-popup-style="dark"] .device-header__identity p, body[data-popup-style="dark"] .availability__time, body[data-popup-style="dark"] .icon-button { color: #aeb6b1; }
+body[data-popup-style="dark"] .router-address-link, body[data-popup-style="dark"] .availability__time, body[data-popup-style="dark"] .icon-button { color: #aeb6b1; }
 body[data-popup-style="dark"] .icon-button:hover { background: #272b29; }
 
 .footer { min-height: 48px; padding: 0 12px; border-top: 1px solid var(--line-soft); }
@@ -248,16 +274,19 @@ body[data-popup-style="dark"] .icon-button:hover { background: #272b29; }
 .refresh-button svg { width: 16px; height: 16px; }
 .refresh-button:disabled { cursor: wait; opacity: .55; }
 
-.icon-button:focus-visible, .refresh-button:focus-visible, .text-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.router-address-link:focus-visible, .icon-button:focus-visible, .refresh-button:focus-visible, .text-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.router-address-link[aria-disabled="true"], .icon-button[aria-disabled="true"] { pointer-events: none; opacity: .5; }
 .is-spinning { animation: spin 850ms linear infinite; }
 @keyframes pulse { 50% { opacity: .35; } }
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes charge-flow { to { background-position: 20px 0; } }
+@keyframes charging-ring { 50% { filter: brightness(1.18); } }
 
 /* Approved compact 300 px layouts. */
 .device-header { min-height: 54px; padding: 0 12px; }
 .device-header__icon { width: 31px; height: 31px; }
 .device-header__identity h1 { font-size: 13px; }
-.device-header__identity p { font-size: 10px; }
+.router-address-link { font-size: 10px; }
 .availability { min-height: 37px; padding: 0 12px; font-size: 11px; }
 .availability__time { font-size: 9px; }
 .notice { margin-right: 9px; margin-left: 9px; }
@@ -359,6 +388,7 @@ body[data-popup-style="dark"] .icon-button:hover { background: #272b29; }
 .signal-ring { margin-top: 0; background: conic-gradient(var(--accent) var(--signal-progress), var(--line-soft) 0); }
 .battery-ring { --battery-progress: 0%; background: conic-gradient(var(--info) var(--battery-progress), var(--line-soft) 0); }
 .battery-ring.battery--low { background: conic-gradient(var(--danger) var(--battery-progress), var(--line-soft) 0); }
+.battery-ring.battery--charging { background: conic-gradient(var(--info) var(--battery-progress), var(--line-soft) 0); animation: charging-ring 1.4s ease-in-out infinite; }
 .signal-ring::before, .battery-ring::before { position: absolute; inset: 8px; border-radius: 50%; content: ""; background: var(--surface); }
 .signal-ring > div, .battery-ring > div { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; transform: rotate(90deg); }
 .signal-ring strong, .battery-ring strong { font-size: 22px; line-height: 1; }

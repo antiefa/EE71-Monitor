@@ -2,93 +2,102 @@
 
 [Русская версия](README.md)
 
-EE71 Monitor is an unofficial browser extension for Chrome, Yandex Browser, Opera, and Firefox. It displays the current state of an **Alcatel EE71 mobile router**, including battery level, mobile network, signal strength, roaming, connection state, and connected clients.
+EE71 Monitor is an unofficial Chrome, Opera, Yandex Browser, and Firefox extension that shows the status of an **Alcatel EE71** mobile router. It reads data directly from the router on the local network and does not send it to external services.
 
-The extension reads system information exposed by the router's home page on the local network without administrator authentication. It does not change router settings or transmit router information to external services.
+The current version for every browser is `1.5.0`. The Firefox package is universal for desktop and Firefox for Android 142+.
 
-Current version: `1.4.0`.
-
-> This community project is not affiliated with or endorsed by Alcatel, TCL, or any mobile operator. Compatibility may depend on the router firmware version.
+> This project is not affiliated with Alcatel, TCL, or any mobile operator. Compatibility may depend on router firmware.
 
 ## Features
 
-- Configurable router IP address with optional port.
-- Local JSON-RPC `GetSystemStatus` polling.
-- Router availability indicator and manual refresh.
-- Battery percentage in the popup and toolbar badge.
-- Configurable one-time low-battery and full-charge notifications.
-- Mobile network name and type, signal strength, roaming, and connection state.
-- Separate 2.4 GHz and 5 GHz Wi-Fi state, SSID, and connected-client counts.
-- Four popup layouts: Grid, Network Focus, Two Rings, and Dark Header.
-- Responsive tabbed settings page.
-- About page with the manifest version, feature summary, privacy information, project links, license, and copyright.
-- Russian and English interface with automatic browser-language selection.
-- No external servers, analytics, or advertising.
+- battery level, mobile network, network type, signal, connection, and roaming status;
+- 2.4 and 5 GHz Wi‑Fi status, SSID, and connected-device counts;
+- automatic and manual refresh;
+- charging detection when the battery rises between consecutive refreshes;
+- blue moving stripes and a lightning mark while charging;
+- configurable toolbar badge: hidden, `51%` or `51`, with lightning and color or color only while charging;
+- clickable router address and a home button that open the router home page;
+- customizable low-battery and full-charge notifications;
+- four popup layouts: Grid, Network Focus, Two Rings, and Dark Header;
+- Russian and English interfaces with light and dark themes;
+- local operation without analytics, advertising, or cloud services.
 
-## Install from an unpacked build
+The browser controls the badge font size, so the extension cannot provide a font-size setting.
 
-### Chrome and Opera
+## Development installation
 
-1. Open `chrome://extensions/` in Chrome or `opera://extensions/` in Opera.
-2. Enable developer mode.
-3. Choose **Load unpacked**.
-4. Select `build/chrome`.
-5. Open the extension settings, save the router address, and grant access to that host.
-
-### Yandex Browser
-
-Open `browser://extensions/`, enable developer mode, choose **Load unpacked**, and select `build/yandex`.
-
-### Firefox
-
-Open `about:debugging#/runtime/this-firefox`, select **Load Temporary Add-on**, and choose `build/firefox/manifest.json`.
-
-The XPI in `dist` is unsigned. Permanent installation in regular Firefox requires Mozilla signing.
-
-## Build
-
-The project has no runtime dependencies and does not use minification or bundling. Node.js 18 or newer is sufficient to prepare browser-specific folders:
+Create the browser builds first:
 
 ```bash
 node scripts/build.mjs
 ```
 
-Source code is stored in `extension/`. The build script copies the shared files and selects the appropriate Manifest V3 file for each browser.
+### Chrome and Opera
 
-## How it works
+1. Open `chrome://extensions/` or `opera://extensions/`.
+2. Enable developer mode.
+3. Choose “Load unpacked” and select `build/chrome`.
 
-1. The extension loads `http://[router]/pc/dist/build.js` and extracts `_TclRequestVerificationKey` and an optional static `_TclRequestVerificationToken`.
-2. It sends the `GetSystemStatus` JSON-RPC request to `http://[router]/jrd/webapi`.
-3. The result is stored locally and displayed in the popup.
+### Yandex Browser
 
-The extension uses `credentials: omit` and does not access administrator cookies. It requests optional HTTP host permission only for the router host entered by the user.
+1. Open `browser://extensions/` or `chrome://extensions/`.
+2. Enable developer mode.
+3. Load the `build/yandex` directory.
+
+### Firefox desktop
+
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Choose “Load Temporary Add-on”.
+3. Select `build/firefox/manifest.json`.
+
+Temporary add-ons are removed after Firefox restarts. Mozilla must sign an XPI for permanent installation.
+
+### Firefox for Android
+
+The same `build/firefox` directory and XPI support desktop Firefox and Firefox for Android 142+. To run it temporarily on Android, use a current `web-ext` and ADB:
+
+```bash
+npx --yes web-ext@latest run --target firefox-android --source-dir build/firefox --adb-device DEVICE_ID --firefox-apk org.mozilla.firefox
+```
+
+## Configuration
+
+The default router address is `192.168.1.1`. You can enter another IP address, hostname, and optional port, such as `192.168.1.1:8080`. When settings are saved, the browser asks for access to the selected address.
+
+The settings tabs control the refresh interval, notifications, language, popup layout, and toolbar battery display. In the popup, both the router address and home button open the router home page.
+
+Charging is considered active when a newly received battery value is higher than the previous successful value. It is not shown on the first refresh or while the level remains unchanged.
 
 ## Permissions
 
 | Permission | Purpose |
 |---|---|
-| `storage` | Store settings and the latest router state locally |
-| `alarms` | Periodically refresh router state |
-| `notifications` | Show configured battery notifications |
-| `declarativeNetRequestWithHostAccess` | Add the router-required `Referer` header only to its status API request |
-| Optional `http://*/*` host access | Request access to the specific router address entered by the user |
+| `storage` | Stores settings and the latest status in the browser |
+| `alarms` | Periodic refresh |
+| `notifications` | Battery notifications |
+| `declarativeNetRequestWithHostAccess` | Performs a router-compatible local status request |
+| optional `http://*/*` | Access to the router address after user confirmation |
 
-## Testing
+The extension does not change router settings or share router data with third parties. See the [privacy policy](PRIVACY.md).
+
+## Builds and tests
+
+`node scripts/build.mjs` creates:
+
+- `build/chrome` for Chrome and Opera;
+- `build/firefox` for desktop and Android Firefox;
+- `build/yandex` for Yandex Browser.
+
+Run the unit tests with:
 
 ```bash
-node --check extension/common.js
-node --check extension/i18n.js
-node --check extension/background.js
-node --check extension/popup.js
-node --check extension/options.js
 node tests/common.test.js
-npx --yes web-ext@latest lint --source-dir build/firefox --output text --no-input
 ```
 
-## Privacy and support
+Ready-to-install version 1.5.0 archives are in `dist/`. See [SOURCE_BUILD.md](SOURCE_BUILD.md) for reproducible build instructions and [CHANGELOG.md](CHANGELOG.md) for release history.
 
-Read the [privacy policy](PRIVACY.md). Report bugs and request features through [GitHub Issues](https://github.com/antiefa/EE71-Monitor/issues).
+## Support and license
 
-## License
+Report bugs and suggestions in [GitHub Issues](https://github.com/antiefa/EE71-Monitor/issues).
 
-Copyright © 2026 [antiefa](https://github.com/antiefa). Released under the [MIT License](LICENSE).
+Author: [antiefa](https://github.com/antiefa). Licensed under the [MIT License](LICENSE).

@@ -2,6 +2,20 @@
 
 All notable changes to EE71 Monitor are documented in this file.
 
+## 1.5.0 — 2026-08-23
+
+- Added charging detection when the battery level increases between consecutive successful refreshes.
+- Added a blue moving-stripe charging animation in the popup and a charging variant of the toolbar icon.
+- Added toolbar badge settings: show or hide the value, include or omit the percent sign, and choose lightning plus color or color only while charging.
+- Added a clickable router address and a home button beside Settings without changing the approved popup layout.
+- Unified the Firefox desktop and Android 142+ builds in one package.
+- Reworked the Russian and English project descriptions around user-facing features and installation.
+
+## 1.4.1 — 2026-08-22
+
+- Added Firefox for Android 142+ compatibility to the standard Firefox package, making one XPI work on desktop and Android.
+- Expanded Mozilla source-review instructions with the reference environment, Node.js installation, and exact Firefox reproduction steps.
+
 ## 1.4.0 — 2026-08-21
 
 - Added a localized About tab with a feature overview, privacy explanation, project links, copyright, and MIT license link.
