@@ -6,6 +6,8 @@ EE71 Monitor — неофициальное расширение для Chrome, 
 
 Текущая версия для всех браузеров — `1.5.0`. Сборка Firefox универсальна для компьютеров и Firefox для Android 142+.
 
+[Установить EE71 Monitor из Firefox Add-ons](https://addons.mozilla.org/ru/firefox/addon/ee71-monitor/)
+
 > Проект не связан с Alcatel, TCL или оператором связи. Совместимость может зависеть от прошивки роутера.
 
 ## Возможности

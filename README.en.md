@@ -6,6 +6,8 @@ EE71 Monitor is an unofficial Chrome, Opera, Yandex Browser, and Firefox extensi
 
 The current version for every browser is `1.5.0`. The Firefox package is universal for desktop and Firefox for Android 142+.
 
+[Install EE71 Monitor from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ee71-monitor/)
+
 > This project is not affiliated with Alcatel, TCL, or any mobile operator. Compatibility may depend on router firmware.
 
 ## Features
