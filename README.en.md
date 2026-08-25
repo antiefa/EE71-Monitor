@@ -4,7 +4,7 @@
 
 EE71 Monitor is an unofficial Chrome, Opera, Yandex Browser, and Firefox extension that shows the status of an **Alcatel EE71** mobile router. It reads data directly from the router on the local network and does not send it to external services.
 
-The current version for every browser is `1.5.1`. The Firefox package is universal for desktop and Firefox for Android 142+.
+The current version for every browser is `1.5.2`. The Firefox package is universal for desktop and Firefox for Android 142+.
 
 [Install EE71 Monitor from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ee71-monitor/)
 
@@ -99,7 +99,7 @@ Run the unit tests with:
 node tests/common.test.js
 ```
 
-Ready-to-install version 1.5.1 archives are in `dist/`. See [SOURCE_BUILD.md](SOURCE_BUILD.md) for reproducible build instructions and [CHANGELOG.md](CHANGELOG.md) for release history.
+Ready-to-install version 1.5.2 archives are in `dist/`. See [SOURCE_BUILD.md](SOURCE_BUILD.md) for reproducible build instructions and [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## Support and license
 

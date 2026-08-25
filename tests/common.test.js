@@ -28,6 +28,29 @@ const {
 } = globalThis.EE71;
 const { resolveLocale, translate } = globalThis.EE71_I18N;
 
+const manifest = JSON.parse(
+  readFileSync(join(__dirname, "../extension/manifest.json"), "utf8")
+);
+const firefoxManifest = JSON.parse(
+  readFileSync(join(__dirname, "../extension/manifest.firefox.json"), "utf8")
+);
+const yandexManifest = JSON.parse(
+  readFileSync(join(__dirname, "../extension/manifest.yandex.json"), "utf8")
+);
+
+assert.equal(
+  firefoxManifest.content_security_policy.extension_pages,
+  "script-src 'self';"
+);
+assert.doesNotMatch(
+  firefoxManifest.content_security_policy.extension_pages,
+  /upgrade-insecure-requests/
+);
+assert.equal("content_security_policy" in manifest, false);
+assert.equal("content_security_policy" in yandexManifest, false);
+assert.equal(firefoxManifest.version, manifest.version);
+assert.equal(yandexManifest.version, manifest.version);
+
 const realFormatSample = [
   "t.http.headers.common._TclRequestVerificationKey=",
   '"KSDHSDFOGQ5WERYTUIQWERTYUISDFG1HJZXCVCXBN2GDSMNDHKVKFsVBNf",',

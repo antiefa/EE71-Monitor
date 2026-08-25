@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
   "description": "__MSG_extensionDescription__",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "homepage_url": "https://github.com/antiefa/EE71-Monitor",
   "default_locale": "en",
   "icons": {
@@ -29,6 +29,9 @@
       "i18n.js",
       "background.js"
     ]
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self';"
   },
   "permissions": [
     "alarms",

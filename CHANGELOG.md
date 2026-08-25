@@ -2,6 +2,11 @@
 
 All notable changes to EE71 Monitor are documented in this file.
 
+## 1.5.2 — 2026-08-25
+
+- Fixed Firefox router requests being upgraded from HTTP to HTTPS by the default extension-page CSP.
+- Added an explicit Firefox-only `content_security_policy` that preserves HTTP access to local EE71 routers.
+
 ## 1.5.1 — 2026-08-25
 
 - Switched charging detection to the EE71 `chg_state` value, with battery growth retained only as a firmware fallback.
