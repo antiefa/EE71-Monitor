@@ -17,6 +17,7 @@ if (typeof importScripts === "function") {
     DEFAULT_SETTINGS,
     EMPTY_STATE,
     api,
+    batteryBadgeText,
     batteryLevel,
     extractVerificationValues,
     isBatteryCharging,
@@ -72,20 +73,17 @@ if (typeof importScripts === "function") {
     }
   }
 
-  function setActionAppearance({ text, backgroundColor, charging, settings, title }) {
+  function setActionAppearance({ text, backgroundColor, title }) {
     callAction("setBadgeText", { text });
     callAction("setBadgeBackgroundColor", { color: backgroundColor });
     callAction("setBadgeTextColor", { color: "#FFFFFF" });
     callAction("setTitle", { title });
 
-    const iconPrefix = charging && settings.badgeChargingStyle === "icon-and-color"
-      ? "icons/icon-charging"
-      : "icons/icon";
     callAction("setIcon", {
       path: {
-        16: `${iconPrefix}-16.png`,
-        32: `${iconPrefix}-32.png`,
-        48: `${iconPrefix}-48.png`
+        16: "icons/icon-16.png",
+        32: "icons/icon-32.png",
+        48: "icons/icon-48.png"
       }
     });
   }
@@ -100,8 +98,6 @@ if (typeof importScripts === "function") {
         setActionAppearance({
           text: visibleText("…"),
           backgroundColor: "#526168",
-          charging: false,
-          settings,
           title: translate(locale, "badgeTitleLoading")
         });
         return;
@@ -110,8 +106,6 @@ if (typeof importScripts === "function") {
         setActionAppearance({
           text: visibleText("×"),
           backgroundColor: "#B23A32",
-          charging: false,
-          settings,
           title: translate(locale, "badgeTitleUnavailable")
         });
         return;
@@ -119,17 +113,14 @@ if (typeof importScripts === "function") {
 
       const level = batteryLevel(state.data);
       const charging = Boolean(state.charging && level !== null);
-      const suffix = settings.badgeFormat === "percent" ? "%" : "";
       const title = level === null
         ? translate(locale, "badgeTitleNoBattery")
         : translate(locale, charging ? "badgeTitleCharging" : "badgeTitleBattery", { level });
       setActionAppearance({
-        text: visibleText(level === null ? "•" : `${level}${suffix}`),
+        text: visibleText(level === null ? "•" : batteryBadgeText(level, settings, charging)),
         backgroundColor: charging
           ? "#318BBB"
           : (level !== null && level <= settings.batteryThreshold ? "#9A5500" : "#26734D"),
-        charging,
-        settings,
         title
       });
     } catch (_error) {
@@ -497,7 +488,7 @@ if (typeof importScripts === "function") {
   }
 
   async function initialize() {
-    const existing = await api.storageGet({});
+    const existing = await api.storageGetAll();
     const missingDefaults = {};
     Object.entries(DEFAULT_SETTINGS).forEach(([key, value]) => {
       if (typeof existing[key] === "undefined") {
@@ -532,6 +523,22 @@ if (typeof importScripts === "function") {
       setupAlarm().catch(() => undefined);
     }
   });
+
+  if (ext.permissions && ext.permissions.onAdded) {
+    ext.permissions.onAdded.addListener((permissions) => {
+      if (permissions.origins && permissions.origins.length) {
+        refreshRouter(false).catch(() => undefined);
+      }
+    });
+  }
+
+  if (ext.permissions && ext.permissions.onRemoved) {
+    ext.permissions.onRemoved.addListener((permissions) => {
+      if (permissions.origins && permissions.origins.length) {
+        refreshRouter(false).catch(() => undefined);
+      }
+    });
+  }
 
   ext.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (!message || typeof message !== "object") {

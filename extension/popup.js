@@ -337,6 +337,38 @@
     ext.runtime.openOptionsPage();
   }
 
+  async function requestRouterAccess() {
+    let connection;
+    try {
+      connection = normalizeRouterAddress(settings.routerAddress);
+    } catch (_error) {
+      openOptions();
+      return;
+    }
+
+    elements.setupButton.disabled = true;
+    try {
+      const granted = await api.permissionsRequest([connection.permissionPattern]);
+      if (!granted) {
+        return;
+      }
+      state = { ...state, loading: true, configured: true, error: null, errorDetail: "" };
+      render();
+      state = await api.sendMessage({ type: "settingsUpdated" });
+    } catch (error) {
+      state = {
+        ...state,
+        loading: false,
+        reachable: false,
+        error: "unknown",
+        errorDetail: error && error.message ? error.message : String(error)
+      };
+    } finally {
+      elements.setupButton.disabled = false;
+      render();
+    }
+  }
+
   async function refresh() {
     state = { ...state, loading: true };
     render();
@@ -366,7 +398,7 @@
 
     elements.refreshButton.addEventListener("click", refresh);
     elements.settingsButton.addEventListener("click", openOptions);
-    elements.setupButton.addEventListener("click", openOptions);
+    elements.setupButton.addEventListener("click", requestRouterAccess);
     render();
 
     ext.storage.onChanged.addListener((changes, areaName) => {

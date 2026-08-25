@@ -1,6 +1,6 @@
 # Source build instructions
 
-EE71 Monitor 1.5.0 contains readable JavaScript, HTML, and CSS. It does not use minification, obfuscation, bundling, transpilation, generated JavaScript, or third-party runtime libraries.
+EE71 Monitor 1.5.1 contains readable JavaScript, HTML, and CSS. It does not use minification, obfuscation, bundling, transpilation, generated JavaScript, or third-party runtime libraries.
 
 ## Requirements
 

@@ -8,12 +8,16 @@
 "use strict";
 
 const assert = require("node:assert/strict");
+const { readFileSync } = require("node:fs");
+const { join } = require("node:path");
 
 require("../extension/common.js");
 require("../extension/i18n.js");
 
 const {
   DEFAULT_SETTINGS,
+  api,
+  batteryBadgeText,
   batteryLevel,
   extractVerificationValues,
   isBatteryCharging,
@@ -62,12 +66,32 @@ assert.equal(batteryLevel({ BatteryLevel: 62, bat_cap: 30 }), 62);
 assert.equal(batteryLevel({ bat_cap: 101 }), 100);
 assert.equal(batteryLevel(null), null);
 
+assert.equal(batteryBadgeText(88, DEFAULT_SETTINGS, false), "88%");
+assert.equal(batteryBadgeText(88, DEFAULT_SETTINGS, true), "↯88");
+assert.equal(batteryBadgeText(100, DEFAULT_SETTINGS, true), "↯100");
+assert.equal(
+  batteryBadgeText(88, { ...DEFAULT_SETTINGS, badgeFormat: "number" }, true),
+  "↯88"
+);
+assert.equal(
+  batteryBadgeText(88, { ...DEFAULT_SETTINGS, badgeChargingStyle: "color-only" }, true),
+  "88%"
+);
+
 assert.equal(isBatteryCharging(null, { BatteryLevel: 50 }), false);
 assert.equal(isBatteryCharging({ BatteryLevel: 50 }, null), false);
 assert.equal(isBatteryCharging({ BatteryLevel: 50 }, { BatteryLevel: 51 }), true);
 assert.equal(isBatteryCharging({ BatteryLevel: 51 }, { BatteryLevel: 51 }), false);
 assert.equal(isBatteryCharging({ BatteryLevel: 51 }, { BatteryLevel: 50 }), false);
 assert.equal(isBatteryCharging({ BatteryLevel: 99 }, { BatteryLevel: 100 }), true);
+assert.equal(isBatteryCharging(null, { BatteryLevel: 50, chg_state: 0 }), true);
+assert.equal(isBatteryCharging({ BatteryLevel: 50 }, { BatteryLevel: 50, chg_state: 0 }), true);
+assert.equal(isBatteryCharging({ BatteryLevel: 50 }, { BatteryLevel: 51, chg_state: 2 }), false);
+assert.equal(isBatteryCharging({ BatteryLevel: 99 }, { BatteryLevel: 100, chg_state: 1 }), false);
+assert.equal(isBatteryCharging(null, { BatteryLevel: 50, chg_state: "0" }), true);
+assert.equal(isBatteryCharging({ BatteryLevel: 50 }, { BatteryLevel: 51, chg_state: "unknown" }), true);
+assert.equal(isBatteryCharging({ BatteryLevel: 50 }, { BatteryLevel: 51, chg_state: "" }), true);
+assert.equal(isBatteryCharging({ BatteryLevel: 50 }, { BatteryLevel: 51, chg_state: null }), true);
 
 assert.deepEqual(networkType(0), { code: 0, known: true, label: "NA" });
 assert.deepEqual(networkType(1), { code: 1, known: true, label: "2G" });
@@ -135,4 +159,51 @@ assert.equal(
   "No verification key was found in the router data."
 );
 
-console.log("EE71 common tests passed");
+const popupHtml = readFileSync(join(__dirname, "../extension/popup.html"), "utf8");
+assert.equal((popupHtml.match(/data-charging-indicator/g) || []).length, 4);
+["grid", "network", "signal", "dark"].forEach((layout) => {
+  const layoutStart = popupHtml.indexOf(`data-layout="${layout}"`);
+  const nextLayout = popupHtml.indexOf("data-layout=", layoutStart + 1);
+  const layoutMarkup = popupHtml.slice(layoutStart, nextLayout === -1 ? undefined : nextLayout);
+  assert.ok(layoutStart >= 0, `Missing ${layout} layout`);
+  assert.match(layoutMarkup, /data-charging-indicator/);
+  assert.match(layoutMarkup, /data-i18n="charging"/);
+});
+
+assert.match(popupHtml, /id="setupButton"[^>]+data-i18n="allowAccess"/);
+const popupJs = readFileSync(join(__dirname, "../extension/popup.js"), "utf8");
+assert.match(popupJs, /api\.permissionsRequest\(\[connection\.permissionPattern\]\)/);
+assert.match(popupJs, /type: "settingsUpdated"/);
+const popupCss = readFileSync(join(__dirname, "../extension/popup.css"), "utf8");
+assert.match(popupCss, /\.battery-progress\.battery--charging > span[\s\S]+animation: charge-flow 1\.35s linear infinite/);
+assert.doesNotMatch(popupCss, /repeating-linear-gradient/);
+assert.match(popupCss, /@keyframes charge-flow[\s\S]+background-position: 100% 0[\s\S]+background-position: -100% 0/);
+assert.match(popupCss, /body \.charging-state svg[\s\S]+color: var\(--charging-bolt\)[\s\S]+animation: charging-bolt/);
+assert.match(popupCss, /\.wide-metric__head > strong,[\s\S]+\.dark-metric--battery > strong \{ display: flex; align-items: center; \}/);
+const backgroundJs = readFileSync(join(__dirname, "../extension/background.js"), "utf8");
+assert.match(backgroundJs, /permissions\.onAdded\.addListener/);
+assert.match(backgroundJs, /permissions\.onRemoved\.addListener/);
+assert.doesNotMatch(backgroundJs, /icons\/icon-charging/);
+
+let requestedStorageKeys = "not-called";
+globalThis.chrome = {
+  runtime: { lastError: null },
+  storage: {
+    local: {
+      get(keys, callback) {
+        requestedStorageKeys = keys;
+        callback({ pollInterval: 17, popupStyle: "dark" });
+      }
+    }
+  }
+};
+
+api.storageGetAll().then((stored) => {
+  assert.equal(requestedStorageKeys, null);
+  assert.deepEqual(stored, { pollInterval: 17, popupStyle: "dark" });
+  delete globalThis.chrome;
+  console.log("EE71 common tests passed");
+}).catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

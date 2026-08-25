@@ -77,6 +77,10 @@
       const ext = extensionApi();
       return callbackCall(ext.storage.local, "get", defaults);
     },
+    storageGetAll() {
+      const ext = extensionApi();
+      return callbackCall(ext.storage.local, "get", null);
+    },
     storageSet(values) {
       const ext = extensionApi();
       return callbackCall(ext.storage.local, "set", values);
@@ -212,6 +216,15 @@
     return Number.isFinite(level) ? Math.round(clampNumber(level, 0, 100, 0)) : null;
   }
 
+  function batteryBadgeText(level, settings, charging) {
+    const chargingPrefix = charging && settings.badgeChargingStyle === "icon-and-color";
+    if (chargingPrefix) {
+      return `↯${level}`;
+    }
+    const suffix = settings.badgeFormat === "percent" ? "%" : "";
+    return `${level}${suffix}`;
+  }
+
   const NETWORK_TYPE_LABELS = Object.freeze({
     0: "NA",
     1: "2G",
@@ -251,6 +264,20 @@
   }
 
   function isBatteryCharging(previousData, currentData) {
+    if (currentData && Object.hasOwn(currentData, "chg_state")) {
+      const rawChargingState = currentData.chg_state;
+      if (
+        rawChargingState !== null
+        && typeof rawChargingState !== "undefined"
+        && String(rawChargingState).trim() !== ""
+      ) {
+        const chargingState = Number(rawChargingState);
+        if (Number.isFinite(chargingState)) {
+          return chargingState === 0;
+        }
+      }
+    }
+
     const previous = batteryLevel(previousData);
     const current = batteryLevel(currentData);
     return previous !== null && current !== null && current > previous;
@@ -262,6 +289,7 @@
     DEFAULT_SETTINGS,
     EMPTY_STATE,
     api,
+    batteryBadgeText,
     batteryLevel,
     extractVerificationValues,
     isBatteryCharging,

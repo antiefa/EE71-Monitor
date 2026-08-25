@@ -2,6 +2,19 @@
 
 All notable changes to EE71 Monitor are documented in this file.
 
+## 1.5.1 — 2026-08-25
+
+- Switched charging detection to the EE71 `chg_state` value, with battery growth retained only as a firmware fallback.
+- Kept charging visible across equal-level refreshes instead of clearing it when the popup refreshes.
+- Kept the standard toolbar icon while charging so the badge no longer competes with a second lightning logo.
+- Replaced the wide emoji badge with a narrow text format (`↯88`, or `↯100` at full charge) that fits Chromium toolbars without clipping.
+- Replaced aliased diagonal battery stripes with a smooth moving highlight on every linear battery bar.
+- Vertically aligned the charging pill and made its lightning blink yellow in all four popup layouts.
+- Added a direct Allow access action to the popup and automatic reconnect after Firefox host permissions change.
+- Fixed extension updates overwriting saved settings: initialization now reads all existing `storage.local` values before adding only newly introduced defaults.
+- Added a clear localized Charging label and stronger blue charging treatment to all four popup layouts.
+- Expanded charging tests to cover the router states, equal battery levels, and the fallback behavior.
+
 ## 1.5.0 — 2026-08-23
 
 - Added charging detection when the battery level increases between consecutive successful refreshes.

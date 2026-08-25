@@ -4,7 +4,7 @@
 
 EE71 Monitor is an unofficial Chrome, Opera, Yandex Browser, and Firefox extension that shows the status of an **Alcatel EE71** mobile router. It reads data directly from the router on the local network and does not send it to external services.
 
-The current version for every browser is `1.5.0`. The Firefox package is universal for desktop and Firefox for Android 142+.
+The current version for every browser is `1.5.1`. The Firefox package is universal for desktop and Firefox for Android 142+.
 
 [Install EE71 Monitor from Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ee71-monitor/)
 
@@ -15,9 +15,10 @@ The current version for every browser is `1.5.0`. The Firefox package is univers
 - battery level, mobile network, network type, signal, connection, and roaming status;
 - 2.4 and 5 GHz Wi‑Fi status, SSID, and connected-device counts;
 - automatic and manual refresh;
-- charging detection when the battery rises between consecutive refreshes;
-- blue moving stripes and a lightning mark while charging;
-- configurable toolbar badge: hidden, `51%` or `51`, with lightning and color or color only while charging;
+- one-click router-address permission in the popup with an automatic retry after access is granted;
+- charging detection from the router's battery status with battery growth as a fallback;
+- an aligned blue Charging label with a blinking yellow bolt and a smooth moving highlight on each battery bar;
+- configurable toolbar badge: hidden, `51%` or `51`, with a narrow blue `↯51` badge or color only while charging; the action icon stays unchanged;
 - clickable router address and a home button that open the router home page;
 - customizable low-battery and full-charge notifications;
 - four popup layouts: Grid, Network Focus, Two Rings, and Dark Header;
@@ -68,7 +69,9 @@ The default router address is `192.168.1.1`. You can enter another IP address, h
 
 The settings tabs control the refresh interval, notifications, language, popup layout, and toolbar battery display. In the popup, both the router address and home button open the router home page.
 
-Charging is considered active when a newly received battery value is higher than the previous successful value. It is not shown on the first refresh or while the level remains unchanged.
+Extension updates preserve saved settings; initialization only adds options introduced by a newer version.
+
+Charging is detected from the battery-status field reported by the EE71. If a firmware does not provide this field, the extension falls back to a battery increase between consecutive successful refreshes.
 
 ## Permissions
 
@@ -96,7 +99,7 @@ Run the unit tests with:
 node tests/common.test.js
 ```
 
-Ready-to-install version 1.5.0 archives are in `dist/`. See [SOURCE_BUILD.md](SOURCE_BUILD.md) for reproducible build instructions and [CHANGELOG.md](CHANGELOG.md) for release history.
+Ready-to-install version 1.5.1 archives are in `dist/`. See [SOURCE_BUILD.md](SOURCE_BUILD.md) for reproducible build instructions and [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## Support and license
 
