@@ -27,6 +27,12 @@ The current version for every browser is `1.5.2`. The Firefox package is univers
 
 The browser controls the badge font size, so the extension cannot provide a font-size setting.
 
+## Screenshots
+
+| Grid | Network Focus | Two Rings | Dark Header |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/popup-grid.png" alt="Grid layout" width="220"> | <img src="docs/screenshots/popup-network.png" alt="Network Focus layout" width="220"> | <img src="docs/screenshots/popup-rings.png" alt="Two Rings layout" width="220"> | <img src="docs/screenshots/popup-dark.png" alt="Dark Header layout" width="220"> |
+
 ## Development installation
 
 Create the browser builds first:
